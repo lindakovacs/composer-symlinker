@@ -26,7 +26,7 @@ class ComposerSymlinker
 		foreach ($map as $class => $file) {
 			if (strpos($file, $vendorDir) === 0) {
 				// ignore package vendor dir
-			} elseif (isset($this->files[$class])) {
+			} elseif (isset($this->files[$class]) && $this->files[$class] !== $file) {
 				throw new Exception("Class $class found in {$this->files[$class]} and in $file.");
 			} else {
 				$this->files[$class] = $file;
