@@ -40,14 +40,22 @@ class ComposerSymlinker
 	 */
 	public function apply($projectDir)
 	{
-		$autoload = "$projectDir/vendor/composer/autoload_classmap.php";
-		if (!is_file($autoload)) {
-			throw new Exception("Missing $autoload");
+		$file = "$projectDir/vendor/composer/autoload_classmap.php";
+		if (!is_file($file)) {
+			throw new Exception("Missing $file");
 		}
 
-		$map = include $autoload;
+		$map = include $file;
 		$map = $this->files + $map;
-		file_put_contents($autoload, '<?php return ' . var_export($map, TRUE) . ';');
+		$export = var_export($map, TRUE);
+		file_put_contents($file, "<?php return $export;");
+
+		$file = "$projectDir/vendor/composer/autoload_static.php";
+		if (is_file($file)) {
+			$content = file_get_contents($file);
+			$content = preg_replace('#\$classMap = array \(.*?\);#s', addcslashes("\$classMap = $export;", '$\\'), $content);
+			file_put_contents($file, $content);
+		}
 	}
 
 }
