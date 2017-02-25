@@ -16,6 +16,5 @@
 	},
 	"autoload": {
 		"classmap": ["src/"]
-	},
-	"bin": ["composer-symlinker"]
+	}
 }
